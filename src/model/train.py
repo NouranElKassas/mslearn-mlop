@@ -6,12 +6,20 @@ import os
 
 import pandas as pd
 
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 
+# Optional: Add MLflow for autologging
+import mlflow
+import mlflow.sklearn
 
 # define functions
 def main(args):
-    # TO DO: enable autologging
+    # Start autologging
+    mlflow.start_run()
+    mlflow.log_param("reg_rate", args.reg_rate)
 
 
     # read data
@@ -33,7 +41,11 @@ def get_csvs_df(path):
     return pd.concat((pd.read_csv(f) for f in csv_files), sort=False)
 
 
-# TO DO: add function to split data
+def split_data(df):
+    # Assuming the last column is the target variable
+    X = df.iloc[:, :-1]  # Features
+    y = df.iloc[:, -1]   # Target variable
+    return train_test_split(X, y, test_size=0.2, random_state=42)
 
 
 def train_model(reg_rate, X_train, X_test, y_train, y_test):
